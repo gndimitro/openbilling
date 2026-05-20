@@ -395,6 +395,7 @@ Every package should prioritize:
 - minimal setup
 - practical usage
 - transparent limitations
+- AI-agent-first explanations with intentionally explicit wording when documenting public APIs, setup, and current limitations
 
 Avoid marketing-heavy language.
 
