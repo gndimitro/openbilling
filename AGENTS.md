@@ -113,6 +113,14 @@ Current package conventions:
 - package scripts should include `build`, `test`, and `typecheck`
 - package source should live in `src/` with tests in `test/`
 
+Demo app conventions:
+- `apps/demo-nextjs` is the App Router demo application for proving provider portability through real routes and UI flows
+- the demo app centralizes provider switching in `apps/demo-nextjs/src/lib/billing.ts`; app routes should not branch on provider-specific checkout identifiers
+- the first demo flow is subscription-focused, uses an email-only checkout form plus a manual customer ID portal form, and keeps provider-specific identifiers server-side in environment variables
+- the demo is currently runnable end-to-end with Dodo; the Stripe branch is intentionally a placeholder until `@openbilling/stripe` exists
+- the demo exposes `/api/checkout`, `/api/portal`, and `/api/webhook` as provider-neutral route handlers over the shared `@openbilling/core` contract
+- root `pnpm dev` prebuilds and watches `@openbilling/core` and `@openbilling/dodo` so the Next.js app consumes workspace package public builds from `dist/`
+
 ---
 
 # Package Responsibilities

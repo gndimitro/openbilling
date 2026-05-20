@@ -8,7 +8,8 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "dev": "pnpm --filter demo-nextjs dev"
+    "predev": "pnpm --filter @openbilling/core build && pnpm --filter @openbilling/dodo build",
+    "dev": "pnpm --parallel --stream --filter @openbilling/core --filter @openbilling/dodo --filter demo-nextjs dev"
   },
   "keywords": [],
   "author": "",
