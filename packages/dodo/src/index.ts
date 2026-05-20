@@ -60,14 +60,28 @@ type DodoWebhookPayload = {
   data?: DodoWebhookData;
 };
 
+/**
+ * Configuration for the Dodo Payments provider adapter.
+ */
 export interface DodoProviderConfig {
+  /** Secret API key used for Dodo REST API requests. */
   apiKey: string;
+  /** Webhook signing secret used by `standardwebhooks` verification. */
   webhookSecret: string;
+  /** Optional API host override. Defaults to Dodo's live API base URL. */
   baseUrl?: string;
 }
 
+/**
+ * Error raised by the Dodo provider adapter.
+ *
+ * The `code` field is stable enough for app-level branching, while `status`
+ * is included when the failure originated from the Dodo HTTP API.
+ */
 export class DodoProviderError extends Error {
+  /** Provider-specific error classification. */
   readonly code: DodoErrorCode;
+  /** HTTP status returned by Dodo when the error came from an API response. */
   readonly status?: number;
 
   constructor(message: string, code: DodoErrorCode, status?: number, options?: ErrorOptions) {
@@ -81,6 +95,39 @@ export class DodoProviderError extends Error {
   }
 }
 
+/**
+ * Creates a fetch-based Dodo Payments adapter that implements the shared
+ * `@openbilling/core` billing contract.
+ *
+ * The current MVP intentionally supports a narrow Dodo surface:
+ * - checkout creation through `POST /checkouts`
+ * - customer portal sessions
+ * - webhook verification plus normalization for a small set of events
+ *
+ * Important provider caveats:
+ * - Dodo currently requires `productId` for checkout creation
+ * - `priceId` alone is not treated as a portable substitute
+ * - the Dodo product determines whether a checkout is one-time or recurring
+ *
+ * @throws {DodoProviderError} When input is unsupported, webhook verification
+ * fails, or the Dodo API returns an error response.
+ *
+ * @example
+ * ```ts
+ * const billing = createDodoProvider({
+ *   apiKey: "dodo_api_key",
+ *   webhookSecret: "whsec_123"
+ * });
+ *
+ * const checkout = await billing.createCheckout({
+ *   productId: "prod_123",
+ *   customerEmail: "demo@example.com",
+ *   successUrl: "https://example.com/success",
+ *   cancelUrl: "https://example.com/cancel",
+ *   mode: "subscription"
+ * });
+ * ```
+ */
 export function createDodoProvider(config: DodoProviderConfig): BillingProvider {
   const baseUrl = normalizeBaseUrl(config.baseUrl);
 
