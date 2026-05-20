@@ -106,6 +106,12 @@ Root-level workspace setup should include:
 - `pnpm-workspace.yaml` with `apps/*` and `packages/*`
 - `tsconfig.base.json` for shared strict TypeScript defaults
 - `.gitignore` covering workspace dependencies, build artifacts, and local environment files
+- a private root `package.json` used only for workspace scripts and shared dev dependencies
+
+Current package conventions:
+- publishable packages should expose builds from `dist/`
+- package scripts should include `build`, `test`, and `typecheck`
+- package source should live in `src/` with tests in `test/`
 
 ---
 
@@ -118,8 +124,15 @@ Contains:
 - normalized types
 - provider contracts
 - shared helpers
+- the `createBilling` typed identity helper for provider composition
 
 This package must remain provider-agnostic.
+
+Current `@openbilling/core` API conventions:
+- provider names should be referenced through `Provider.Stripe` and `Provider.Dodo`, and `BillingProviderName` should be derived from those constants
+- `VerifyWebhookInput.payload` uses `string | Uint8Array` to stay runtime-agnostic
+- `createBilling` should preserve provider-specific subtype information rather than narrowing adapters to the shared interface
+- normalized webhook event discriminants should be referenced through grouped constants such as `Subscription.Active`, `Subscription.Cancelled`, `Payment.Succeeded`, and `Webhook.Unknown`
 
 ---
 
@@ -300,11 +313,13 @@ Prefer:
 - lightweight unit tests
 - mocked provider responses
 - contract-level validation
+- single-responsibility tests with one behavior or contract per test case
 
 Avoid:
 - brittle integration tests
 - requiring real billing credentials
 - excessive mocking complexity
+- super tests that validate multiple unrelated behaviors or contracts in one example
 
 ---
 
