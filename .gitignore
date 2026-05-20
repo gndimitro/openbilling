@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Package manager
+pnpm-debug.log*
+
+# Build output
+dist/
+coverage/
+.next/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local tooling and OS files
+.DS_Store
+.vercel/
