@@ -136,6 +136,20 @@ describe("core contracts", () => {
     expect(webhookFromBytes.payload).toBeInstanceOf(Uint8Array);
   });
 
+  it("accepts webhook headers without requiring a duplicated signature", () => {
+    const webhookWithHeaders: VerifyWebhookInput = {
+      payload: "{\"type\":\"payment.succeeded\"}",
+      headers: {
+        "webhook-id": "evt_123",
+        "webhook-signature": "sig_123",
+        "webhook-timestamp": "1747742400"
+      }
+    };
+
+    expect(webhookWithHeaders.signature).toBeUndefined();
+    expect(webhookWithHeaders.headers?.["webhook-id"]).toBe("evt_123");
+  });
+
   it("exports the BillingProviderName union", () => {
     expectTypeOf<BillingProviderName>().toEqualTypeOf<"stripe" | "dodo">();
   });
@@ -164,6 +178,18 @@ describe("core contracts", () => {
 
   it("exports the webhook payload input union", () => {
     expectTypeOf<VerifyWebhookInput["payload"]>().toEqualTypeOf<string | Uint8Array>();
+  });
+
+  it("allows the webhook signature to be optional", () => {
+    expectTypeOf<VerifyWebhookInput["signature"]>().toEqualTypeOf<string | undefined>();
+  });
+
+  it("allows the webhook secret to be optional", () => {
+    expectTypeOf<VerifyWebhookInput["secret"]>().toEqualTypeOf<string | undefined>();
+  });
+
+  it("allows providers to receive raw webhook headers", () => {
+    expectTypeOf<VerifyWebhookInput["headers"]>().toEqualTypeOf<Record<string, string | undefined> | undefined>();
   });
 
   it("uses the subscription constant type for active subscription events", () => {

@@ -131,6 +131,7 @@ This package must remain provider-agnostic.
 Current `@openbilling/core` API conventions:
 - provider names should be referenced through `Provider.Stripe` and `Provider.Dodo`, and `BillingProviderName` should be derived from those constants
 - `VerifyWebhookInput.payload` uses `string | Uint8Array` to stay runtime-agnostic
+- `VerifyWebhookInput` supports optional `secret`, optional `signature`, and optional raw `headers` so providers can verify webhooks from request headers while still allowing config-first secret setup
 - `createBilling` should preserve provider-specific subtype information rather than narrowing adapters to the shared interface
 - normalized webhook event discriminants should be referenced through grouped constants such as `Subscription.Active`, `Subscription.Cancelled`, `Payment.Succeeded`, and `Webhook.Unknown`
 
@@ -156,6 +157,13 @@ Contains:
 Implementation may initially use lightweight fetch-based wrappers.
 
 Do NOT invent unsupported Dodo features.
+
+Current `@openbilling/dodo` conventions:
+- `createDodoProvider` is fetch-based and defaults to `https://live.dodopayments.com`, with `baseUrl` available for test-mode or custom-host overrides
+- checkout creation is product-based and currently requires `productId`; `priceId` is not treated as a portable substitute for Dodo
+- customer billing management uses Dodo customer portal sessions
+- webhook verification uses `standardwebhooks` plus the raw `webhook-id`, `webhook-signature`, and `webhook-timestamp` headers
+- normalized Dodo webhook coverage is intentionally narrow for MVP: `payment.succeeded`, `subscription.active`, and `subscription.cancelled`; unsupported events map to `Webhook.Unknown`
 
 ---
 

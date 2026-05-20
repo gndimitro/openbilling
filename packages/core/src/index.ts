@@ -51,8 +51,9 @@ export interface PortalLinkResult {
 
 export interface VerifyWebhookInput {
   payload: string | Uint8Array;
-  signature: string;
-  secret: string;
+  signature?: string;
+  secret?: string;
+  headers?: Record<string, string | undefined>;
 }
 
 export type NormalizedWebhookEvent =
