@@ -3,6 +3,7 @@ node_modules/
 
 # Package manager
 pnpm-debug.log*
+.pnpm-store/
 
 # Build output
 dist/
