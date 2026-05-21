@@ -6,6 +6,7 @@ import {
   type CreateCheckoutInput,
 } from '@openbilling/core';
 import { createDodoProvider } from '@openbilling/dodo';
+import { createStripeProvider } from '@openbilling/stripe';
 
 export const DEMO_CHECKOUT_MODE: BillingMode = 'subscription';
 
@@ -30,9 +31,10 @@ export function getConfiguredProviderName(): BillingProviderName {
 export function getBillingProvider(): BillingProvider {
   switch (getConfiguredProviderName()) {
     case Provider.Stripe:
-      throw new Error(
-        'BILLING_PROVIDER=stripe is not implemented yet in this repo.',
-      );
+      return createStripeProvider({
+        apiKey: requireEnv('STRIPE_API_KEY'),
+        webhookSecret: requireEnv('STRIPE_WEBHOOK_SECRET'),
+      });
 
     case Provider.Dodo:
       return createDodoProvider({

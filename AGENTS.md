@@ -128,9 +128,9 @@ Demo app conventions:
 - `apps/demo-nextjs` is the App Router demo application for proving provider portability through real routes and UI flows
 - the demo app centralizes provider switching in `apps/demo-nextjs/src/lib/billing.ts`; app routes should not branch on provider-specific checkout identifiers
 - the first demo flow is subscription-focused, uses an email-only checkout form plus a manual customer ID portal form, and keeps provider-specific identifiers server-side in environment variables
-- the demo is currently runnable end-to-end with Dodo; the Stripe branch is intentionally a placeholder until `@openbilling/stripe` exists
+- the demo is runnable end-to-end with both Dodo and Stripe through the same provider-neutral routes
 - the demo exposes `/api/checkout`, `/api/portal`, and `/api/webhook` as provider-neutral route handlers over the shared `@openbilling/core` contract
-- root `pnpm dev` prebuilds and watches `@openbilling/core` and `@openbilling/dodo` so the Next.js app consumes workspace package public builds from `dist/`
+- root `pnpm dev` prebuilds and watches `@openbilling/core`, `@openbilling/dodo`, and `@openbilling/stripe` so the Next.js app consumes workspace package public builds from `dist/`
 
 ---
 
@@ -166,7 +166,17 @@ Contains:
 - Stripe-specific mappings
 - Stripe webhook normalization
 
-Use official Stripe SDK.
+Use lightweight direct REST calls instead of the Stripe SDK.
+
+Current `@openbilling/stripe` conventions:
+
+- `createStripeProvider` is fetch-based and targets `https://api.stripe.com` for both test and live mode; the authenticated key determines the environment
+- outbound Stripe REST requests pin `Stripe-Version: 2026-04-22.dahlia`
+- checkout creation is price-based and currently requires `priceId`; `productId` is not treated as a portable substitute for Stripe
+- checkout creation uses Stripe Checkout Sessions for both one-time payments and subscriptions
+- customer billing management uses Stripe Billing Portal sessions
+- webhook verification uses the raw `Stripe-Signature` header with built-in HMAC-SHA256 verification and a 5-minute tolerance window
+- normalized Stripe webhook coverage is intentionally narrow for MVP: `checkout.session.completed`, `payment_intent.succeeded`, `customer.subscription.created`, `customer.subscription.updated` with active status, and `customer.subscription.deleted`; unsupported events map to `Webhook.Unknown`
 
 ---
 

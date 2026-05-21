@@ -46,11 +46,41 @@ describe("billing helper", () => {
     });
   });
 
-  it("throws a clear unsupported error when Stripe is selected", async () => {
+  it("creates a Stripe provider without requiring inactive Dodo env vars", async () => {
     process.env.BILLING_PROVIDER = "stripe";
+    process.env.STRIPE_API_KEY = "rk_test_stripe";
+    process.env.STRIPE_WEBHOOK_SECRET = "whsec_stripe";
+    process.env.STRIPE_PRICE_ID = "price_stripe";
+
+    const billing = await import("../src/lib/billing");
+    const provider = billing.getBillingProvider();
+
+    expect(provider).toMatchObject({
+      createCheckout: expect.any(Function),
+      createPortalLink: expect.any(Function),
+      verifyWebhook: expect.any(Function)
+    });
+  });
+
+  it("builds a Stripe checkout input from env-backed provider config", async () => {
+    process.env.BILLING_PROVIDER = "stripe";
+    process.env.STRIPE_API_KEY = "rk_test_stripe";
+    process.env.STRIPE_WEBHOOK_SECRET = "whsec_stripe";
+    process.env.STRIPE_PRICE_ID = "price_stripe";
 
     const billing = await import("../src/lib/billing");
 
-    expect(() => billing.getBillingProvider()).toThrowError("BILLING_PROVIDER=stripe is not implemented yet in this repo.");
+    expect(
+      billing.buildDemoCheckoutInput({
+        customerEmail: "demo@example.com",
+        origin: "https://demo.openbilling.dev"
+      })
+    ).toEqual({
+      customerEmail: "demo@example.com",
+      priceId: "price_stripe",
+      successUrl: "https://demo.openbilling.dev/success",
+      cancelUrl: "https://demo.openbilling.dev/cancel",
+      mode: "subscription"
+    });
   });
 });

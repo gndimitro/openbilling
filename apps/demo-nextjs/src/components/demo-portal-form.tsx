@@ -47,7 +47,7 @@ export function DemoPortalForm({ disabled = false }: DemoPortalFormProps) {
     }
 
     if (disabled) {
-      setErrorMessage("Switch BILLING_PROVIDER to dodo until the Stripe adapter package exists.");
+      setErrorMessage("The active billing provider is not runnable in this demo.");
       return;
     }
 
@@ -83,7 +83,7 @@ export function DemoPortalForm({ disabled = false }: DemoPortalFormProps) {
         </div>
         <p className="hint">
           {disabled
-            ? "The UI stays provider-neutral, but the runnable portal flow remains Dodo-only in this stage."
+            ? "This provider-neutral portal route stays disabled until the active provider is wired in."
             : "This demo stays database-free and auth-free while still exercising the shared billing contract."}
         </p>
         <p className="feedback" aria-live="polite">

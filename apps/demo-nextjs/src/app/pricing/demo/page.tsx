@@ -8,7 +8,8 @@ export const dynamic = "force-dynamic";
 
 export default function PricingDemoPage() {
   const providerName = getConfiguredProviderName();
-  const isProviderRunnable = providerName === Provider.Dodo;
+  const isProviderRunnable =
+    providerName === Provider.Dodo || providerName === Provider.Stripe;
 
   return (
     <main className="page-shell">
@@ -28,8 +29,8 @@ export default function PricingDemoPage() {
           <article className="panel">
             <h2 className="panel-title">What this stage proves</h2>
             <p className="panel-copy">
-              The Next.js app routes call the shared OpenBilling contract only once the request reaches the server. Dodo
-              is fully runnable now, while Stripe stays visible as the next provider milestone.
+              The Next.js app routes call the shared OpenBilling contract only once the request reaches the server. The
+              same checkout, portal, and webhook routes stay intact while the provider adapter changes underneath them.
             </p>
             <ul className="panel-list">
               <li>`POST /api/checkout` builds one subscription checkout input per provider.</li>
@@ -42,7 +43,7 @@ export default function PricingDemoPage() {
             <p className="panel-copy">
               {providerName === Provider.Dodo
                 ? "Dodo is active and backed by the workspace adapter. Enter a customer email to launch checkout or a customer ID to open the portal."
-                : "Stripe stays as the placeholder provider constant for the portability story, but the adapter package is not implemented in this repo yet."}
+                : "Stripe is active and backed by the workspace adapter. Enter a customer email to launch checkout or a Stripe customer ID to open the portal."}
             </p>
             <div className="spec-row">
               <span className="spec-pill">Core API: stable</span>
@@ -66,8 +67,8 @@ export default function PricingDemoPage() {
           </p>
           <ul className="panel-list">
             <li>`BILLING_PROVIDER` selects the adapter branch.</li>
-            <li>`DODO_API_KEY`, `DODO_WEBHOOK_SECRET`, and `DODO_PRODUCT_ID` power the runnable path today.</li>
-            <li>`STRIPE_*` stays documented so the demo contract is ready for the next adapter stage.</li>
+            <li>`DODO_API_KEY`, `DODO_WEBHOOK_SECRET`, and `DODO_PRODUCT_ID` power the Dodo path.</li>
+            <li>`STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_PRICE_ID` power the Stripe path.</li>
           </ul>
         </article>
       </section>

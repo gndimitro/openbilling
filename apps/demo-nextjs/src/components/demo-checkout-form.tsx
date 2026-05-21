@@ -48,7 +48,7 @@ export function DemoCheckoutForm({ disabled = false }: DemoCheckoutFormProps) {
     }
 
     if (disabled) {
-      setErrorMessage("Switch BILLING_PROVIDER to dodo until the Stripe adapter package exists.");
+      setErrorMessage("The active billing provider is not runnable in this demo.");
       return;
     }
 
@@ -84,7 +84,7 @@ export function DemoCheckoutForm({ disabled = false }: DemoCheckoutFormProps) {
         </div>
         <p className="hint">
           {disabled
-            ? "The shared route is wired, but the Stripe adapter package still needs to be implemented in the workspace."
+            ? "This shared route stays disabled until the active provider is wired into the workspace adapter."
             : "The app route stays the same even when the configured provider changes."}
         </p>
         <p className="feedback" aria-live="polite">

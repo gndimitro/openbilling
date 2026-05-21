@@ -30,6 +30,7 @@ OpenBilling exists to reduce that rewrite cost for common SaaS billing workflows
 Today, OpenBilling provides:
 
 - a provider-agnostic core contract in `@openbilling/core`
+- a Stripe adapter in `@openbilling/stripe`
 - a Dodo Payments adapter in `@openbilling/dodo`
 - portable checkout creation
 - portable billing portal link creation
@@ -75,6 +76,7 @@ pnpm build
 Current workspace packages:
 
 - `@openbilling/core`
+- `@openbilling/stripe`
 - `@openbilling/dodo`
 
 ## Basic usage
@@ -125,7 +127,8 @@ switch (event.type) {
 
 Notes:
 
-- the current runnable adapter is Dodo
+- the current runnable adapters are Stripe and Dodo
+- Stripe checkout creation currently requires `priceId`
 - Dodo checkout creation currently requires `productId`
 - unsupported provider webhook payloads normalize to `unknown` instead of throwing purely because the event is outside the MVP
 
@@ -166,16 +169,33 @@ const billing = createDodoProvider({
 
 ### Stripe
 
-Stripe is part of the portability contract in `@openbilling/core`, but the Stripe adapter package is not implemented in this repo yet.
+The Stripe adapter is implemented as a lightweight fetch-based package in this repo.
 
-What exists today:
+Required configuration:
 
-- `Provider.Stripe` exists in the shared provider constants
-- the demo app documents `STRIPE_*` environment variables as part of the intended contract
+- `apiKey`
+- `webhookSecret`
 
-What does not exist yet:
+Important Stripe behavior in the current MVP:
 
-- a runnable `@openbilling/stripe` adapter in this repository
+- checkout creation is price-based and currently requires `priceId`
+- checkout creation uses Stripe Checkout Sessions for both `payment` and `subscription` modes
+- billing management uses Stripe Billing Portal sessions
+- Stripe test and live mode both use `https://api.stripe.com`; the key determines the environment
+- outbound Stripe REST requests pin `Stripe-Version: 2026-04-22.dahlia`
+- webhook verification uses the raw `Stripe-Signature` header with manual HMAC verification
+- normalized Stripe webhook coverage is intentionally narrow for MVP: `checkout.session.completed`, `payment_intent.succeeded`, `customer.subscription.created`, `customer.subscription.updated` with active status, and `customer.subscription.deleted`
+
+Example:
+
+```ts
+import { createStripeProvider } from '@openbilling/stripe';
+
+const billing = createStripeProvider({
+  apiKey: process.env.STRIPE_API_KEY!,
+  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+});
+```
 
 ## Normalized webhook events
 
@@ -200,6 +220,14 @@ Current Dodo webhook normalization coverage is intentionally narrow for the MVP:
 - `payment.succeeded`
 - `subscription.active`
 - `subscription.cancelled`
+
+Current Stripe webhook normalization coverage is intentionally narrow for the MVP:
+
+- `checkout.session.completed` where `payment_intent` is present
+- `payment_intent.succeeded`
+- `customer.subscription.created` with active status
+- `customer.subscription.updated` with active status
+- `customer.subscription.deleted`
 
 If an event is unsupported or does not contain the minimum fields needed for safe normalization, OpenBilling returns:
 
@@ -230,7 +258,7 @@ cp apps/demo-nextjs/.env.example apps/demo-nextjs/.env.local
 pnpm dev
 ```
 
-Then fill in the Dodo variables in `apps/demo-nextjs/.env.local` and open:
+Then fill in the provider variables that match your chosen `BILLING_PROVIDER` in `apps/demo-nextjs/.env.local` and open:
 
 ```txt
 http://localhost:3000/pricing/demo
@@ -238,8 +266,8 @@ http://localhost:3000/pricing/demo
 
 Important demo notes:
 
-- `BILLING_PROVIDER=dodo` is the runnable path today
-- `BILLING_PROVIDER=stripe` is intentionally still a placeholder path
+- set `BILLING_PROVIDER=dodo` and fill the `DODO_*` variables to demo Dodo
+- set `BILLING_PROVIDER=stripe` and fill the `STRIPE_*` variables to demo Stripe
 - the demo keeps provider-specific identifiers behind `apps/demo-nextjs/src/lib/billing.ts`
 - the app routes stay centered on shared billing workflows rather than provider-specific branches
 

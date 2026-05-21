@@ -20,6 +20,21 @@ describe("demo pages", () => {
     expect(screen.getByRole("button", { name: /open billing portal/i })).toBeDefined();
   });
 
+  it("renders the Stripe pricing demo page as runnable", () => {
+    process.env.BILLING_PROVIDER = "stripe";
+
+    render(<PricingDemoPage />);
+
+    expect(screen.getByText(/active provider: stripe/i)).toBeDefined();
+
+    const checkoutButton = screen.getByRole("button", { name: /start subscription checkout/i });
+    const portalButton = screen.getByRole("button", { name: /open billing portal/i });
+
+    expect(checkoutButton.hasAttribute("disabled")).toBe(false);
+    expect(portalButton.hasAttribute("disabled")).toBe(false);
+    expect(screen.getByText(/stripe is active and backed by the workspace adapter/i)).toBeDefined();
+  });
+
   it("renders the success page", () => {
     render(<SuccessPage />);
 
