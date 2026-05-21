@@ -49,6 +49,10 @@ type StripeWebhookEvent = {
 
 /**
  * Configuration for the Stripe provider adapter.
+ *
+ * The current Stripe adapter is intentionally narrow and only covers the
+ * hosted checkout, billing portal, and webhook flows documented in the root
+ * README.
  */
 export interface StripeProviderConfig {
   /** Restricted or secret API key used for Stripe REST API requests. */
@@ -59,6 +63,9 @@ export interface StripeProviderConfig {
 
 /**
  * Error raised by the Stripe provider adapter.
+ *
+ * The `code` field is stable enough for app-level branching, while `status`
+ * is included when the failure originated from the Stripe HTTP API.
  */
 export class StripeProviderError extends Error {
   /** Stable provider-specific error classification. */
@@ -80,6 +87,47 @@ export class StripeProviderError extends Error {
 /**
  * Creates a fetch-based Stripe adapter that implements the shared
  * `@openbilling/core` billing contract.
+ *
+ * The current MVP intentionally supports a narrow Stripe surface:
+ * - checkout creation through Stripe Checkout Sessions
+ * - customer billing management through Stripe Billing Portal
+ * - webhook verification plus normalization for a small set of events
+ *
+ * Important provider caveats:
+ * - Stripe currently requires `priceId` for checkout creation
+ * - `productId` alone is not treated as a portable substitute
+ * - both test and live mode target `https://api.stripe.com`; the key
+ *   determines the environment
+ * - outbound REST requests pin `Stripe-Version: 2026-04-22.dahlia`
+ *
+ * Supported normalized Stripe webhook coverage:
+ * - `checkout.session.completed` where `payment_intent` is present
+ * - `payment_intent.succeeded`
+ * - `customer.subscription.created` with active status
+ * - `customer.subscription.updated` with active status
+ * - `customer.subscription.deleted`
+ *
+ * Unsupported Stripe events resolve to {@link Webhook.Unknown} instead of
+ * throwing purely because the event is outside the current MVP.
+ *
+ * @throws {StripeProviderError} When input is unsupported, webhook
+ * verification fails, or the Stripe API returns an error response.
+ *
+ * @example
+ * ```ts
+ * const billing = createStripeProvider({
+ *   apiKey: "sk_test_123",
+ *   webhookSecret: "whsec_123"
+ * });
+ *
+ * const checkout = await billing.createCheckout({
+ *   priceId: "price_123",
+ *   customerEmail: "demo@example.com",
+ *   successUrl: "https://example.com/success",
+ *   cancelUrl: "https://example.com/cancel",
+ *   mode: "subscription"
+ * });
+ * ```
  */
 export function createStripeProvider(config: StripeProviderConfig): BillingProvider {
   return createBilling({

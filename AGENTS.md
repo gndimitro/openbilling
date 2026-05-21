@@ -122,6 +122,12 @@ Current package conventions:
 - package scripts should include `build`, `test`, and `typecheck`
 - package source should live in `src/` with tests in `test/`
 - exported public APIs in publishable packages should include JSDoc in source so editor hovers and generated `.d.ts` files explain contracts clearly
+- public JSDoc in publishable package entrypoints should stay aligned with the root `README.md`, especially around provider caveats, supported webhook coverage, and setup expectations
+
+Release documentation conventions:
+
+- the root `README.md` should be external-first for release work, with published-package installation and quickstart guidance ahead of monorepo contributor setup
+- contributor-oriented monorepo and demo instructions can live later in the root `README.md`, but should not displace the primary package-consumer path
 
 Demo app conventions:
 

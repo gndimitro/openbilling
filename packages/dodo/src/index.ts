@@ -62,6 +62,9 @@ type DodoWebhookPayload = {
 
 /**
  * Configuration for the Dodo Payments provider adapter.
+ *
+ * The current Dodo adapter is intentionally narrow and only covers the hosted
+ * checkout, customer portal, and webhook flows documented in the root README.
  */
 export interface DodoProviderConfig {
   /** Secret API key used for Dodo REST API requests. */
@@ -101,13 +104,23 @@ export class DodoProviderError extends Error {
  *
  * The current MVP intentionally supports a narrow Dodo surface:
  * - checkout creation through `POST /checkouts`
- * - customer portal sessions
+ * - customer billing management through customer portal sessions
  * - webhook verification plus normalization for a small set of events
  *
  * Important provider caveats:
  * - Dodo currently requires `productId` for checkout creation
  * - `priceId` alone is not treated as a portable substitute
  * - the Dodo product determines whether a checkout is one-time or recurring
+ * - the adapter defaults to `https://live.dodopayments.com`, with `baseUrl`
+ *   available for test mode or custom hosts
+ *
+ * Supported normalized Dodo webhook coverage:
+ * - `payment.succeeded`
+ * - `subscription.active`
+ * - `subscription.cancelled`
+ *
+ * Unsupported Dodo events resolve to {@link Webhook.Unknown} instead of
+ * throwing purely because the event is outside the current MVP.
  *
  * @throws {DodoProviderError} When input is unsupported, webhook verification
  * fails, or the Dodo API returns an error response.

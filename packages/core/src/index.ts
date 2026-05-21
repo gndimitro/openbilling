@@ -57,9 +57,9 @@ export interface CreateCheckoutInput {
   customerId?: string;
   /** Customer email used when the provider needs to create or identify a customer. */
   customerEmail?: string;
-  /** Portable product identifier. Dodo currently requires this field. */
+  /** Product identifier used by product-based adapters. Dodo currently requires this field. */
   productId?: string;
-  /** Provider-specific price identifier when the adapter supports price-based checkout creation. */
+  /** Price identifier used by price-based adapters. Stripe currently requires this field. */
   priceId?: string;
   /** Where the hosted checkout should redirect after a successful purchase. */
   successUrl: string;
