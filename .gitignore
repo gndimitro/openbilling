@@ -22,3 +22,5 @@ coverage/
 
 # Plans
 plans/
+
+.claude/settings.local.json

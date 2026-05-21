@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 
 import PricingDemoPage from "../src/app/pricing/demo/page";
 import SuccessPage from "../src/app/success/page";
@@ -10,29 +10,38 @@ afterEach(() => {
 });
 
 describe("demo pages", () => {
-  it("renders the pricing demo page", () => {
+  it("renders the landing page", () => {
     process.env.BILLING_PROVIDER = "dodo";
 
     render(<PricingDemoPage />);
 
-    expect(screen.getByRole("heading", { level: 1, name: /portable billing demo/i })).toBeDefined();
-    expect(screen.getByRole("button", { name: /start subscription checkout/i })).toBeDefined();
-    expect(screen.getByRole("button", { name: /open billing portal/i })).toBeDefined();
+    expect(screen.getByRole("heading", { level: 1, name: /billing infrastructure/i })).toBeDefined();
+    expect(screen.getByRole("button", { name: /buy now/i })).toBeDefined();
+    expect(screen.getByRole("button", { name: /^sign in$/i })).toBeDefined();
   });
 
-  it("renders the Stripe pricing demo page as runnable", () => {
+  it("opens the portal modal when Sign in is clicked", () => {
     process.env.BILLING_PROVIDER = "stripe";
 
     render(<PricingDemoPage />);
 
-    expect(screen.getByText(/active provider: stripe/i)).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: /^sign in$/i }));
 
-    const checkoutButton = screen.getByRole("button", { name: /start subscription checkout/i });
-    const portalButton = screen.getByRole("button", { name: /open billing portal/i });
+    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(screen.getByRole("heading", { level: 2, name: /sign in to your portal/i })).toBeDefined();
+    expect(screen.getByRole("button", { name: /open portal/i })).toBeDefined();
+  });
 
-    expect(checkoutButton.hasAttribute("disabled")).toBe(false);
-    expect(portalButton.hasAttribute("disabled")).toBe(false);
-    expect(screen.getByText(/stripe is active and backed by the workspace adapter/i)).toBeDefined();
+  it("toggles the price when switching to yearly billing", () => {
+    process.env.BILLING_PROVIDER = "dodo";
+
+    render(<PricingDemoPage />);
+
+    expect(screen.getByRole("button", { name: /buy now — \$49/i })).toBeDefined();
+
+    fireEvent.click(screen.getByRole("tab", { name: /yearly/i }));
+
+    expect(screen.getByRole("button", { name: /buy now — \$39\/mo/i })).toBeDefined();
   });
 
   it("renders the success page", () => {
