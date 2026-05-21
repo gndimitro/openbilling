@@ -94,7 +94,7 @@ export function PricingCard({ isProviderRunnable }: PricingCardProps) {
   const buttonDisabled = isPending || done;
 
   return (
-    <form className="card" onSubmit={handleSubmit} noValidate>
+    <form className="card" onSubmit={handleSubmit}>
       <div className="tag">Most popular</div>
       <div className="tier-name">Studio plan</div>
       <div className="price">
@@ -105,14 +105,12 @@ export function PricingCard({ isProviderRunnable }: PricingCardProps) {
         For growing teams. Cancel anytime — no contracts, no setup fees.
       </p>
 
-      <div className="billing-toggle" role="tablist" aria-label="Billing cycle">
+      <div className="billing-toggle" role="group" aria-label="Billing cycle">
         {(["monthly", "yearly"] as const).map((opt) => (
           <button
             key={opt}
             type="button"
-            role="tab"
-            aria-selected={billing === opt}
-            className={billing === opt ? "is-active" : ""}
+            aria-pressed={billing === opt}
             onClick={() => setBilling(opt)}
           >
             {opt}

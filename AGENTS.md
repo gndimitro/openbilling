@@ -131,6 +131,9 @@ Demo app conventions:
 - the demo is runnable end-to-end with both Dodo and Stripe through the same provider-neutral routes
 - the demo exposes `/api/checkout`, `/api/portal`, and `/api/webhook` as provider-neutral route handlers over the shared `@openbilling/core` contract
 - root `pnpm dev` prebuilds and watches `@openbilling/core`, `@openbilling/dodo`, and `@openbilling/stripe` so the Next.js app consumes workspace package public builds from `dist/`
+- demo marketing headlines that need a visual line break should prefer styled block spans over raw `<br />` when the full sentence also needs a stable accessible name
+- segmented controls in the demo UI should use honest button-group semantics such as `aria-pressed` rather than tab roles unless they actually control tab panels
+- demo forms should keep native browser validation enabled unless the UI intentionally replaces it with an equivalent custom validation flow
 
 ---
 

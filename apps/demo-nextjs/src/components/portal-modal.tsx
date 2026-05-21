@@ -1,11 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState, useTransition, type FormEvent } from "react";
-import { createPortal } from "react-dom";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+  type FormEvent,
+} from 'react';
+import { createPortal } from 'react-dom';
 
 type PortalResponse = {
   url: string;
-  provider: "dodo" | "stripe";
+  provider: 'dodo' | 'stripe';
 };
 
 type PortalModalProps = {
@@ -14,23 +20,33 @@ type PortalModalProps = {
   disabled?: boolean;
 };
 
-async function createPortalSession(customerId: string): Promise<PortalResponse> {
-  const response = await fetch("/api/portal", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ customerId })
+async function createPortalSession(
+  customerId: string,
+): Promise<PortalResponse> {
+  const response = await fetch('/api/portal', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ customerId }),
   });
 
   const body = (await response.json()) as PortalResponse | { error?: string };
 
   if (!response.ok) {
-    throw new Error("error" in body && body.error ? body.error : "Failed to open billing portal.");
+    throw new Error(
+      'error' in body && body.error
+        ? body.error
+        : 'Failed to open billing portal.',
+    );
   }
 
   return body as PortalResponse;
 }
 
-export function PortalModal({ open, onClose, disabled = false }: PortalModalProps) {
+export function PortalModal({
+  open,
+  onClose,
+  disabled = false,
+}: PortalModalProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [mounted, setMounted] = useState(false);
@@ -46,13 +62,13 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
     inputRef.current?.focus();
 
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
+      if (event.key === 'Escape') onClose();
     }
-    document.addEventListener("keydown", onKey);
+    document.addEventListener('keydown', onKey);
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     return () => {
-      document.removeEventListener("keydown", onKey);
+      document.removeEventListener('keydown', onKey);
       document.body.style.overflow = previousOverflow;
     };
   }, [open, onClose]);
@@ -63,15 +79,15 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const customerId = String(formData.get("customerId") ?? "").trim();
+    const customerId = String(formData.get('customerId') ?? '').trim();
 
     if (!customerId) {
-      setErrorMessage("Enter your customer ID to open the portal.");
+      setErrorMessage('Enter your customer ID to open the portal.');
       return;
     }
 
     if (disabled) {
-      setErrorMessage("No billing provider is configured for this demo.");
+      setErrorMessage('No billing provider is configured for this demo.');
       return;
     }
 
@@ -86,7 +102,11 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
       const portal = await createPortalSession(customerId);
       window.location.assign(portal.url);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Failed to open billing portal.");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Failed to open billing portal.',
+      );
     }
   }
 
@@ -103,8 +123,18 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
         aria-modal="true"
         aria-labelledby="portal-modal-title"
       >
-        <button type="button" className="modal-close" aria-label="Close" onClick={onClose}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <button
+          type="button"
+          className="modal-close"
+          aria-label="Close"
+          onClick={onClose}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
             <path
               d="M3 3 L11 11 M11 3 L3 11"
               stroke="currentColor"
@@ -115,7 +145,8 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
         </button>
         <h2 id="portal-modal-title">Sign in to your portal</h2>
         <p className="sub">
-          Enter your customer ID to manage your subscription, invoices and payment methods.
+          Enter your customer ID to manage your subscription, invoices and
+          payment methods.
         </p>
         <form onSubmit={handleSubmit}>
           <div className="field">
@@ -130,7 +161,11 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
               required
             />
           </div>
-          <button type="submit" className="btn primary lg block" disabled={isPending}>
+          <button
+            type="submit"
+            className="btn primary lg block"
+            disabled={isPending}
+          >
             {isPending ? (
               <>
                 <span className="spinner" />
@@ -139,7 +174,12 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
             ) : (
               <>
                 Open portal
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                >
                   <path
                     d="M3 7 H11 M7.5 3.5 L11 7 L7.5 10.5"
                     stroke="currentColor"
@@ -151,16 +191,15 @@ export function PortalModal({ open, onClose, disabled = false }: PortalModalProp
               </>
             )}
           </button>
-          <p className={`fine${errorMessage ? " error" : ""}`} aria-live="polite">
-            {errorMessage ?? (
-              <>
-                Reuses the shared <span className="mono">/api/portal</span> route across providers.
-              </>
-            )}
+          <p
+            className={`fine${errorMessage ? ' error' : ''}`}
+            aria-live="polite"
+          >
+            {errorMessage ?? ''}
           </p>
         </form>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

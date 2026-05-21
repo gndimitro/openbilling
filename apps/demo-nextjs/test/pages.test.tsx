@@ -10,14 +10,24 @@ afterEach(() => {
 });
 
 describe("demo pages", () => {
-  it("renders the landing page", () => {
+  it("renders the landing page with an accessible hero headline and native email validation", () => {
     process.env.BILLING_PROVIDER = "dodo";
 
     render(<PricingDemoPage />);
 
-    expect(screen.getByRole("heading", { level: 1, name: /billing infrastructure/i })).toBeDefined();
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: /switch between stripe and dodo payments without rewriting your billing logic\./i
+      })
+    ).toBeDefined();
     expect(screen.getByRole("button", { name: /buy now/i })).toBeDefined();
     expect(screen.getByRole("button", { name: /^sign in$/i })).toBeDefined();
+
+    const emailInput = screen.getByRole("textbox", { name: /email/i }) as HTMLInputElement;
+
+    expect(emailInput.getAttribute("type")).toBe("email");
+    expect(emailInput.form?.hasAttribute("novalidate")).toBe(false);
   });
 
   it("opens the portal modal when Sign in is clicked", () => {
@@ -37,10 +47,18 @@ describe("demo pages", () => {
 
     render(<PricingDemoPage />);
 
+    expect(screen.getByRole("group", { name: /billing cycle/i })).toBeDefined();
+    const monthlyButton = screen.getByRole("button", { name: /^monthly$/i });
+    const yearlyButton = screen.getByRole("button", { name: /yearly/i });
+
+    expect(monthlyButton.getAttribute("aria-pressed")).toBe("true");
+    expect(yearlyButton.getAttribute("aria-pressed")).toBe("false");
     expect(screen.getByRole("button", { name: /buy now — \$49/i })).toBeDefined();
 
-    fireEvent.click(screen.getByRole("tab", { name: /yearly/i }));
+    fireEvent.click(yearlyButton);
 
+    expect(monthlyButton.getAttribute("aria-pressed")).toBe("false");
+    expect(yearlyButton.getAttribute("aria-pressed")).toBe("true");
     expect(screen.getByRole("button", { name: /buy now — \$39\/mo/i })).toBeDefined();
   });
 

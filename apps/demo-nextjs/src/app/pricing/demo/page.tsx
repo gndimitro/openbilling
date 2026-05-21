@@ -30,9 +30,8 @@ export default function PricingDemoPage() {
             <span>v2.4 — Usage-based invoicing is here</span>
           </div>
           <h1 className="display">
-            Switch between Stripe and Dodo Payments
-            <br />
-            <em>without rewriting your billing logic.</em>
+            <span className="display-line">Switch between Stripe and Dodo Payments</span>{" "}
+            <em className="display-line">without rewriting your billing logic.</em>
           </h1>
           <p className="lede">
             Portable billing infrastructure for modern SaaS.
