@@ -128,7 +128,7 @@ Release documentation conventions:
 
 - the root `README.md` should be external-first for release work, with published-package installation and quickstart guidance ahead of monorepo contributor setup
 - contributor-oriented monorepo and demo instructions can live later in the root `README.md`, but should not displace the primary package-consumer path
-- manual Fumadocs-ready docs bundles should be authored as plain MDX under `generated-fumadocs/content/docs`, sourced from committed README, public source, tests, and demo code rather than generated API output
+- manual Fumadocs-ready docs bundles should be authored as plain MDX under `/docs`, sourced from committed README, public source, tests, and demo code rather than generated API output
 
 Demo app conventions:
 
