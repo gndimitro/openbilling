@@ -32,5 +32,8 @@
   },
   "dependencies": {
     "@openbilling/core": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

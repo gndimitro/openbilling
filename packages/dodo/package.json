@@ -33,5 +33,8 @@
   "dependencies": {
     "@openbilling/core": "workspace:*",
     "standardwebhooks": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

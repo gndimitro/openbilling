@@ -29,5 +29,8 @@
     "dev": "tsup src/index.ts --format esm,cjs --dts --clean --watch",
     "test": "vitest run",
     "typecheck": "tsc --project tsconfig.json --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
