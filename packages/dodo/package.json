@@ -1,11 +1,22 @@
 {
   "name": "@openbilling/dodo",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "homepage": "https://github.com/gndimitro/openbilling",
+  "description": "Switch between Stripe and Dodo Payments without rewriting your billing logic",
+  "license": "MIT",
+  "keywords": [
+    "billing",
+    "payments",
+    "stripe",
+    "dodo"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
