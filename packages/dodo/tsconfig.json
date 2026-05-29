@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
-    "rootDir": ".",
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
   },
   "include": ["src", "test"]

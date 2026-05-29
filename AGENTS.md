@@ -121,6 +121,7 @@ Current package conventions:
 - publishable packages should expose builds from `dist/`
 - package scripts should include `build`, `test`, and `typecheck`
 - package source should live in `src/` with tests in `test/`
+- `tsconfig.base.json` maps `@openbilling/*` workspace package names to source entrypoints so `pnpm typecheck` works from a clean checkout before `dist/` exists; package-level tsconfigs should not reintroduce a narrow `rootDir` that excludes imported workspace source
 - exported public APIs in publishable packages should include JSDoc in source so editor hovers and generated `.d.ts` files explain contracts clearly
 - public JSDoc in publishable package entrypoints should stay aligned with the root `README.md`, especially around provider caveats, supported webhook coverage, and setup expectations
 
@@ -138,6 +139,7 @@ Demo app conventions:
 - the demo is runnable end-to-end with both Dodo and Stripe through the same provider-neutral routes
 - the demo exposes `/api/checkout`, `/api/portal`, and `/api/webhook` as provider-neutral route handlers over the shared `@openbilling/core` contract
 - root `pnpm dev` prebuilds and watches `@openbilling/core`, `@openbilling/dodo`, and `@openbilling/stripe` so the Next.js app consumes workspace package public builds from `dist/`
+- because `apps/demo-nextjs/tsconfig.json` defines its own `paths`, it must mirror the `@openbilling/*` source mappings from the root config alongside its `@/*` alias
 - demo marketing headlines that need a visual line break should prefer styled block spans over raw `<br />` when the full sentence also needs a stable accessible name
 - segmented controls in the demo UI should use honest button-group semantics such as `aria-pressed` rather than tab roles unless they actually control tab panels
 - demo forms should keep native browser validation enabled unless the UI intentionally replaces it with an equivalent custom validation flow

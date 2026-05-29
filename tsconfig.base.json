@@ -18,7 +18,13 @@
     "verbatimModuleSyntax": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@openbilling/core": ["packages/core/src/index.ts"],
+      "@openbilling/dodo": ["packages/dodo/src/index.ts"],
+      "@openbilling/stripe": ["packages/stripe/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "dist", ".next", "coverage"]
 }
