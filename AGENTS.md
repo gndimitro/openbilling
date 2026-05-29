@@ -122,6 +122,7 @@ Current package conventions:
 - package scripts should include `build`, `test`, and `typecheck`
 - package source should live in `src/` with tests in `test/`
 - `tsconfig.base.json` maps `@openbilling/*` workspace package names to source entrypoints so `pnpm typecheck` works from a clean checkout before `dist/` exists; package-level tsconfigs should not reintroduce a narrow `rootDir` that excludes imported workspace source
+- provider package Vitest configs alias `@openbilling/core` to the core source entrypoint so `pnpm test` also works before package `dist/` exists
 - exported public APIs in publishable packages should include JSDoc in source so editor hovers and generated `.d.ts` files explain contracts clearly
 - public JSDoc in publishable package entrypoints should stay aligned with the root `README.md`, especially around provider caveats, supported webhook coverage, and setup expectations
 
