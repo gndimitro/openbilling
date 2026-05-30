@@ -37,5 +37,21 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Publish packages
-        run: pnpm -r --filter @openbilling/core --filter @openbilling/stripe --filter @openbilling/dodo stage publish --no-git-checks
+      - name: Pack packages
+        run: |
+          PACK_DIR="$RUNNER_TEMP/openbilling-packs"
+          mkdir -p "$PACK_DIR"
+
+          pnpm --filter @openbilling/core pack --pack-destination "$PACK_DIR"
+          pnpm --filter @openbilling/stripe pack --pack-destination "$PACK_DIR"
+          pnpm --filter @openbilling/dodo pack --pack-destination "$PACK_DIR"
+
+          ls -lh "$PACK_DIR"
+
+      - name: Stage packages on npm
+        run: |
+          PACK_DIR="$RUNNER_TEMP/openbilling-packs"
+
+          npm stage publish "$PACK_DIR"/openbilling-core-*.tgz --access public
+          npm stage publish "$PACK_DIR"/openbilling-stripe-*.tgz --access public
+          npm stage publish "$PACK_DIR"/openbilling-dodo-*.tgz --access public
