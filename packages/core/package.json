@@ -1,6 +1,6 @@
 {
   "name": "@openbilling/core",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "homepage": "https://openbilling.geodim.dev",
   "description": "Switch between Stripe and Dodo Payments without rewriting your billing logic",
   "license": "MIT",
