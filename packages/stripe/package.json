@@ -3,6 +3,11 @@
   "version": "0.1.0-alpha.1",
   "homepage": "https://openbilling.geodim.dev",
   "description": "Switch between Stripe and Dodo Payments without rewriting your billing logic",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gndimitro/openbilling",
+    "directory": "packages/stripe"
+  },
   "license": "MIT",
   "keywords": [
     "billing",

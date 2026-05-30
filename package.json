@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gndimitro/openbilling"
+  },
   "main": "index.js",
   "scripts": {
     "build": "pnpm -r build",

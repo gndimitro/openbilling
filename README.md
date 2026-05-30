@@ -241,7 +241,7 @@ The homepage redirects to `/pricing/demo`.
 To run the monorepo locally:
 
 ```bash
-git clone https://github.com/georgedimitrov/openbilling.git
+git clone https://github.com/gndimitro/openbilling.git
 cd openbilling
 pnpm install
 pnpm build

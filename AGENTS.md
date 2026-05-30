@@ -125,6 +125,7 @@ Current package conventions:
 - provider package Vitest configs alias `@openbilling/core` to the core source entrypoint so `pnpm test` also works before package `dist/` exists
 - exported public APIs in publishable packages should include JSDoc in source so editor hovers and generated `.d.ts` files explain contracts clearly
 - public JSDoc in publishable package entrypoints should stay aligned with the root `README.md`, especially around provider caveats, supported webhook coverage, and setup expectations
+- publishable package manifests should set `repository.url` to the GitHub repository root (`https://github.com/gndimitro/openbilling`) and `repository.directory` to the package path so npm provenance can validate monorepo publishes
 - publishable packages should include concise package-level `README.md` files intended for npm display, with package role, small context, documentation link, and repository link
 
 Release documentation conventions:
