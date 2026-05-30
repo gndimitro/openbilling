@@ -38,4 +38,4 @@ jobs:
         run: pnpm build
 
       - name: Publish packages
-        run: pnpm -r --filter @openbilling/core --filter @openbilling/stripe --filter @openbilling/dodo publish --no-git-checks
+        run: pnpm -r --filter @openbilling/core --filter @openbilling/stripe --filter @openbilling/dodo stage publish --no-git-checks
