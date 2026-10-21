@@ -475,3 +475,8 @@ Focus on:
 - simplicity
 - maintainability
 - developer experience
+
+## Next.js security baseline
+
+- `apps/demo-nextjs/package.json` pins Next.js `16.4.1` for the October 14, 2026 security advisories. Keep directly declared Next.js companion packages on the same release and ensure the lockfile resolves the sharp dependency used by Next.js to at least `0.35.5`.
+- Validate builds from a source copy that excludes all `.env` files.
